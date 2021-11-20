@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 .vscode
+.python-version
+/coinbase_data
