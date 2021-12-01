@@ -16,7 +16,7 @@ def import_crypto_ts(symbol):
     # select columns of interest
     df = df[["date", "open", "close", "high", "low", "volume"]]
     # Add symbol column as identifier
-    df[symbol] = str(symbol)
+    df["symbol"] = str(symbol)
     return df
 
 
@@ -55,7 +55,6 @@ if __name__ == "__main__":
     )
     print("\n")
     crypto_symbol = input()
-    # a = import_crypto_ts("BTC/USD")
     print("Fetching from Coinbase API...")
     a = calc_returns_vols(import_crypto_ts(crypto_symbol))
     print(a.tail(10))
