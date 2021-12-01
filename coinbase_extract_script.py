@@ -41,4 +41,4 @@ def fetch_daily_data(symbol):
 if __name__ == "__main__":
     # we set which pair we want to retrieve data for
     pair = "BTC/USD"
-    fetch_daily_data(symbol=pair)
+    fetch_daily_data(pair)
