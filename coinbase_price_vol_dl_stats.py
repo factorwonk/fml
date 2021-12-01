@@ -13,10 +13,10 @@ def import_crypto_ts(symbol):
         os.path.join(path, "Coinbase_%s_dailydata.csv" % symbol.replace("/", "")),
         parse_dates=["date"],
     )
-    # df = pd.read_csv("Coinbase_BTCUSD_dailydata.csv", parse_dates=["date"])
     # select columns of interest
     df = df[["date", "open", "close", "high", "low", "volume"]]
-    # df = df.set_index("date")
+    # Add symbol column as identifier
+    df[symbol] = str(symbol)
     return df
 
 
@@ -28,8 +28,10 @@ def calc_returns_vols(input_df):
     output_df["close_log_return"] = np.log(output_df.close) - np.log(
         output_df.close.shift(1)
     )
+    # Calculate 20 day Moving Average Price
+    output_df["20_day_map"] = output_df.close.rolling(20).mean()
     # Calculate 20 day average daily volume
-    output_df["20_day_adv"] = output_df.volume.rolling(20).sum() / 20.0
+    output_df["20_day_adv"] = output_df.volume.rolling(20).mean()
     return output_df
 
 
