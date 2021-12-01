@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from coinbase_data.coinbase_extract_script import fetch_daily_data
+from coinbase_extract_script import fetch_daily_data
+from datetime import datetime
 
 
 def import_crypto_ts(symbol):
@@ -37,13 +38,16 @@ def calc_returns_vols(input_df):
 
 def chart_price_vols(input_df):
     # Chart price and volume history and saves the file
+    # init date
+    date = datetime.now().strftime("%Y%m%d")
+    # init date
     path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
     fig, (ax1, ax2) = plt.subplots(2, figsize=(10, 8), sharex=True)
     fig.suptitle("Price and Volume Charts")
     ax1.plot(a["date"], a["close"], label="Close Price")
     ax2.plot(a["date"], a["volume"], label="Volume")
     plt.legend("Price and Volume History")
-    plt.savefig(os.path.join(path, "price_vol.png"))
+    plt.savefig(os.path.join(path, f"price_vol_{date}.png"))
     plt.close(fig)
 
 

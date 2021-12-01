@@ -3,17 +3,24 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from coinbase_data.coinbase_extract_script import fetch_daily_data
+from coinbase_extract_script import fetch_daily_data
 from coinbase_price_vol_dl_stats import import_crypto_ts
+from datetime import datetime
 
 
 def crypto_wallet():
-    # This depends on data availabilty
+    # This depends on data availabilty from Coinbase
     crypto_array = ["BTC/USD", "ETH/USD", "DOGE/USD", "SOL/USD"]
+    # init date
+    date = datetime.now().strftime("%Y%m%d")
+    # init path
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
+    # init empty df
     wallet_df = pd.DataFrame()
-    # wallet_df = [wallet_df.append(import_crypto_ts(c)) for c in crypto_array]
+    # Appending dataframes this way is not efficient. Append to a list first, then convert to DF
     for c in crypto_array:
         wallet_df = wallet_df.append(import_crypto_ts(c))
+    wallet_df.to_csv(os.path.join(path, f"coinbase_merged_{date}.csv"))
     return wallet_df
 
 
@@ -21,8 +28,9 @@ if __name__ == "__main__":
     # Loop through and extract price data for various crypto currencies
     print("start...")
     print("\n")
-    print("Extract historical price and volume data from Coinbase for listed Cryptos.")
+    print("Extracting historical price and volume data from Coinbase...")
     a = crypto_wallet()
     print(a.tail(10))
     print("\n")
+    print("Saving to output folder...")
     print("done...")
