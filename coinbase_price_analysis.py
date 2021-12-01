@@ -16,7 +16,7 @@ def import_crypto_ts(symbol):
     # df = pd.read_csv("Coinbase_BTCUSD_dailydata.csv", parse_dates=["date"])
     # select columns of interest
     df = df[["date", "open", "close", "high", "low", "volume"]]
-    df = df.set_index("date")
+    # df = df.set_index("date")
     return df
 
 
@@ -34,26 +34,31 @@ def calc_returns_vols(input_df):
 
 
 def chart_price_vols(input_df):
+    # Chart price and volume history and saves the file
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
     fig, (ax1, ax2) = plt.subplots(2, figsize=(10, 8), sharex=True)
     fig.suptitle("Price and Volume Charts")
     ax1.plot(a["date"], a["close"], label="Close Price")
     ax2.plot(a["date"], a["volume"], label="Volume")
-    plt.show()
-    plt.legend("Close Price History")
-    return 0
+    plt.legend("Price and Volume History")
+    plt.savefig(os.path.join(path, "price_vol.png"))
+    plt.close(fig)
 
 
 if __name__ == "__main__":
     # we set which pair we want to retrieve data for
     print("\n")
     print(
-        "Enter the Crypto symbol you want price and volume history for e.g. BTC/USD, ETH/EUR etc"
+        "Enter the Crypto symbol you want price and volume history for: BTC/USD; ETH/EUR etc"
     )
     print("\n")
     crypto_symbol = input()
     # a = import_crypto_ts("BTC/USD")
-    print("Fetching...")
+    print("Fetching from Coinbase API...")
     a = calc_returns_vols(import_crypto_ts(crypto_symbol))
     print(a.tail(10))
-    print("\n")
     print("done...")
+    print("\n")
+    print("Charting Prices and Volumes")
+    chart_price_vols(a)
+    print("All done...")
