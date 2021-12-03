@@ -36,7 +36,7 @@ def calc_returns_vols(input_df):
     return output_df
 
 
-def chart_price_vols(input_df):
+def chart_price_vols(input_df, symbol):
     # Chart price and volume history and saves the file
     # init date
     date = datetime.now().strftime("%Y%m%d")
@@ -47,7 +47,7 @@ def chart_price_vols(input_df):
     ax1.plot(a["date"], a["close"], label="Close Price")
     ax2.plot(a["date"], a["volume"], label="Volume")
     plt.legend("Price and Volume History")
-    plt.savefig(os.path.join(path, f"price_vol_{date}.png"))
+    plt.savefig(os.path.join(path, f"{symbol}_price_vol_{date}.png"))
     plt.close(fig)
 
 
@@ -65,5 +65,5 @@ if __name__ == "__main__":
     print("done...")
     print("\n")
     print("Charting Prices and Volumes")
-    chart_price_vols(a)
+    chart_price_vols(a, crypto_symbol.replace("/", ""))
     print("All done...")

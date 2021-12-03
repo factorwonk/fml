@@ -20,7 +20,7 @@ def crypto_wallet():
     # Appending dataframes this way is not efficient. Append to a list first, then convert to DF
     for c in crypto_array:
         wallet_df = wallet_df.append(import_crypto_ts(c))
-    wallet_df.to_csv(os.path.join(path, f"coinbase_merged_{date}.csv"))
+    wallet_df.to_csv(os.path.join(path, f"coinbase_merged_{date}.csv"), index=False)
     return wallet_df
 
 
