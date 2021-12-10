@@ -289,9 +289,9 @@ if __name__ == "__main__":
     # print("\n")
     # print("Significance of the residuals")
     # print("\n")
-    c = test_significance(a.iloc[:, 0], a.iloc[:, 1], b)
-    print(c)
-    print("\n")
+    # c = test_significance(a.iloc[:, 0], a.iloc[:, 1], b)
+    # print(c)
+    # print("\n")
     print("Test against critical t-value of ADF and ECM")
     d = test_cointegration(
         a.iloc[:, 0],
