@@ -1,9 +1,6 @@
 import os
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
-from coinbase_extract_script import fetch_daily_data
 from coinbase_price_vol_dl_stats import import_crypto_ts
 from datetime import datetime
 

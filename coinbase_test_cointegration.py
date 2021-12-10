@@ -3,8 +3,6 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-from statsmodels.tsa.stattools import coint
-from statsmodels.tsa.stattools import adfuller
 from datetime import datetime
 from numpy.linalg import inv
 from scipy.stats import t
@@ -24,9 +22,7 @@ def transform_data():
     return df
 
 
-def regression(df):
-    xdata = df.iloc[:, 0]
-    ydata = df.iloc[:, 1]
+def regression(xdata, ydata):
     flag = 0
     if isinstance(xdata, pd.DataFrame):
         flag = 1
@@ -125,7 +121,7 @@ def test_significance(xdata, ydata, residuals):
     return ecm_regressor1
 
 
-def test_cointegration(xdata, ydata, stat_val_ci, conf_val_ci, s1, s2):
+def test_cointegration(xdata, ydata, stat_value_ci, sig_value_ci, s1, s2):
     adf_critical_values1 = {"0.99": -3.46, "0.95": -2.88, "0.9": -2.57}
     adf_critical_values2 = {"0.99": -3.44, "0.95": -2.87, "0.9": -2.57}
     adf_critical_values3 = {"0.99": -3.43, "0.95": -2.86, "0.9": -2.57}
@@ -157,7 +153,7 @@ def test_cointegration(xdata, ydata, stat_val_ci, conf_val_ci, s1, s2):
                     stat_test.tvalues["y-1"]
                 )
             )
-            return -1
+            # return -1
 
     elif len(residuals1) > 250:
         if abs(stat_test.tvalues["y-1"]) > abs(
@@ -283,7 +279,7 @@ if __name__ == "__main__":
     print(a)
     print("\n")
     print("Here's basic regression")
-    x = regression(a)
+    x = regression(a.iloc[:, 0], a.iloc[:, 1])
     print("Here's just the residuals")
     print(x[2])
     print("\n")
@@ -297,4 +293,14 @@ if __name__ == "__main__":
     c = test_significance(a.iloc[:, 0], a.iloc[:, 1], b)
     print(c)
     print("\n")
+    print("Test against critical t-value of ADF and ECM")
+    d = test_cointegration(
+        a.iloc[:, 0],
+        a.iloc[:, 1],
+        stat_value_ci=0.95,
+        sig_value_ci=0.95,
+        s1=str(list(a.columns.values)[0]),
+        s2=str(list(a.columns.values)[1]),
+    )
+    print(d)
     print("Done!")
