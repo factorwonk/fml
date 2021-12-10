@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
+
 from datetime import datetime
 from numpy.linalg import inv
 from scipy.stats import t
@@ -86,9 +87,8 @@ def test_stationarity(residuals):
 
 
 def test_significance(xdata, ydata, residuals):
-    """Testing the significance of the coefficient of lagged residual using its t-statistic. 
-    The cointegration is relevant only if the significance test is passed at 
-    the specified confidence interval.
+    """Testing the significance of the coefficient of lagged residual using it's t-statistic.
+    The cointegration is relevant only if the significance test is passed at the specified confidence interval.
 
     Args:
         xdata ([type]): [description]
@@ -129,7 +129,6 @@ def test_cointegration(xdata, ydata, stat_value_ci, sig_value_ci, s1, s2):
     # Lets pass the residual values directly into here
     coef1, intercept1, residuals1 = regression(xdata, ydata)
     coef2, intercept2, residuals2 = regression(ydata, xdata)
-    flag = 0
     flag1 = 0
 
     stat_test = test_stationarity(residuals1)
@@ -278,18 +277,18 @@ if __name__ == "__main__":
     a = transform_data()
     print(a)
     print("\n")
-    print("Here's basic regression")
-    x = regression(a.iloc[:, 0], a.iloc[:, 1])
-    print("Here's just the residuals")
-    print(x[2])
-    print("\n")
-    print("Going to calculate the residuals with OLS function...")
-    b = calc_residuals(a)
-    print("residuals1")
-    print(b)
-    print("\n")
-    print("Significance of the residuals")
-    print("\n")
+    # print("Here's basic regression")
+    # x = regression(a.iloc[:, 0], a.iloc[:, 1])
+    # print("Here's just the residuals")
+    # print(x[2])
+    # print("\n")
+    # print("Going to calculate the residuals with OLS function...")
+    # b = calc_residuals(a)
+    # print("residuals1")
+    # print(b)
+    # print("\n")
+    # print("Significance of the residuals")
+    # print("\n")
     c = test_significance(a.iloc[:, 0], a.iloc[:, 1], b)
     print(c)
     print("\n")
