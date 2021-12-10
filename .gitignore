@@ -130,3 +130,7 @@ dmypy.json
 
 .vscode
 .python-version
+
+# API input data and saved outputs
+coinbase_data/
+coinbase_outputs/

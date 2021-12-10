@@ -4,8 +4,11 @@ import requests
 import json
 import os
 
+from datetime import datetime
+
 
 def fetch_daily_data(symbol):
+    date = datetime.now().strftime("%Y%m%d")
     # symbol must be in format XXX/XXX ie. BTC/EUR
     pair_split = symbol.split("/")
     symbol = pair_split[0] + "-" + pair_split[1]
@@ -29,7 +32,8 @@ def fetch_daily_data(symbol):
         else:
             data.to_csv(
                 os.path.join(
-                    path, f"Coinbase_{pair_split[0] + pair_split[1]}_dailydata.csv"
+                    path,
+                    f"Coinbase_{pair_split[0] + pair_split[1]}_dailydata_{date}.csv",
                 ),
                 index=False,
             )

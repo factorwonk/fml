@@ -8,10 +8,13 @@ from datetime import datetime
 
 
 def import_crypto_ts(symbol):
+    date = datetime.now().strftime("%Y%m%d")
     path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_data"
     fetch_daily_data(symbol)
     df = pd.read_csv(
-        os.path.join(path, "Coinbase_%s_dailydata.csv" % symbol.replace("/", "")),
+        os.path.join(
+            path, f"Coinbase_%s_dailydata_{date}.csv" % symbol.replace("/", "")
+        ),
         parse_dates=["date"],
     )
     # select columns of interest
