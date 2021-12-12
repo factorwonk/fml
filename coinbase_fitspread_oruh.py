@@ -52,12 +52,12 @@ def fit_spread_oruh(residuals):
     # start with residuals
     spread = pd.DataFrame(residuals)
     # rename
-    spread.columns = "Spread"
+    spread.columns = ["Spread"]
     # lag by one period
     spread["Spreadt-1"] = spread["Spread"].shift(1)
     spread.dropna(inplace=True)
     target_y = pd.DataFrame(spread["Spread"])
-    target_y.columns["y"]
+    target_y.columns = ["y"]
     spread.drop(["Spread"], axis=1, inplace=True)
 
     # Calculating Ornstein-Uhlenbeck parameters from linear regression
@@ -75,7 +75,7 @@ def fit_spread_oruh(residuals):
     mean_r = mean_reverting_term / (1 - autoregression_coefficient)
     # Use mean value for any NaNs
     if np.isnan(mean_r).any():
-        mean = np.nan_to_num(mean_r)
+        mean_r = np.nan_to_num(mean_r)
 
     # Compute the instantaneous and equivalent diffusion for the spread
     diffusion_or_uh = np.sqrt(
@@ -92,7 +92,7 @@ def fit_spread_oruh(residuals):
     )
     print(
         "The mean reversion for this spread is {} \nSigma of reversion for this spread is {} \nMean reversion speed, short term diffusion and half-life of OU is {}, {} and {}".format(
-            mean[0],
+            mean_r[0],
             diffusion_eq[0],
             mean_reversion_speed[0],
             diffusion_or_uh[0],
@@ -103,11 +103,13 @@ def fit_spread_oruh(residuals):
     iqr_mr = iqr(mean_r) * 4
     iqr_sr = iqr(diffusion_eq) * 4
     iqr_spr = iqr(mean_reversion_speed) * 4
-    iqr_ds = iqr(diffusion_ou) * 4
+    iqr_ds = iqr(diffusion_or_uh) * 4
     lim = [iqr_mr, iqr_sr, iqr_spr, iqr_ds]
 
     path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
-    fig = plt.subplots(4, figsize=(24, 24))
+    date = datetime.now().strftime("%Y%m%d")
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(24, 24), sharex=True)
+    # fig.suptitle("Trading Sessions")
     xlabel = "Trading Sessions"
     ylabel = [
         "OU Mean",
@@ -117,18 +119,18 @@ def fit_spread_oruh(residuals):
     ]
     title = [
         "Mean of Reversion",
-        "Sigma of Revesion",
-        "Speed of Revesion",
+        "Sigma of Reversion",
+        "Speed of Reversion",
         "Diffusion over short timescale",
     ]
     subplots = [411, 412, 413, 414]
     labels = [
         "Mean of Reversion",
-        "Sigma of Revesion",
+        "Sigma of Reversion",
         "Speed of Reversion",
         "Diffusion over short timescale",
     ]
-    plots = [mean, diffusion_eq, mean_reversion_speed, diffusion_or_uh]
+    plots = [mean_r, diffusion_eq, mean_reversion_speed, diffusion_or_uh]
 
     for i in range(0, 4):
         plt.subplot(subplots[i])
@@ -140,7 +142,7 @@ def fit_spread_oruh(residuals):
         )
         plt.plot(plots[i], label=labels[i])
         plt.legend()
-    plt.savefig(os.path.join(path, f"{symbol}_price_vol_{date}.png"))
+    plt.savefig(os.path.join(path, f"mean_reversion_plots_{date}.png"))
     plt.close(fig)
 
     return mean_r, diffusion_eq
@@ -149,12 +151,12 @@ def fit_spread_oruh(residuals):
 if __name__ == "__main__":
     # Loop through and extract price data for various crypto currencies
     print("\n")
-    print("Importing currencies into crypto wallet")
+    print("Importing currencies into today's crypto wallet")
     a = crypto_wallet()
     print("\n")
-    print("Imported crypto wallet")
+    print("Imported today's crypto wallet")
     print("\n")
-    print("Transform dataframe")
+    print("Extract pairs: BTC/USD and ETH/USD")
     print("\n")
     b = transform_data()
     print(b)
@@ -167,3 +169,9 @@ if __name__ == "__main__":
     print("\n")
     print("Residuals\n", resid)
     print("\n")
+    print("Now returning mean reversion and Equivalent Diffusion of the spread")
+    mean_rev, diff_eq = fit_spread_oruh(resid)
+    print("Mean Reversion for Spread:\n", mean_rev)
+    print("Equivalent Diffusion of Spread:\n", diff_eq)
+    print("\n")
+    print("The End...")
