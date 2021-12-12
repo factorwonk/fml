@@ -7,7 +7,18 @@ from datetime import datetime
 
 def crypto_wallet():
     # This depends on data availabilty from Coinbase
-    crypto_array = ["BTC/USD", "ETH/USD", "DOGE/USD", "SOL/USD"]
+    crypto_array = [
+        "BTC/USD",
+        "ETH/USD",
+        "DOGE/USD",
+        "SOL/USD",
+        "LTC/USD",
+        "ZEC/USD",
+        "ADA/USD",
+        "DAI/USD",
+        "SHIB/USD",
+        "MATIC/USD",
+    ]
     # init date
     date = datetime.now().strftime("%Y%m%d")
     # init path
