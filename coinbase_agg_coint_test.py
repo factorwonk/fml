@@ -1,9 +1,11 @@
 import os
 import pandas as pd
+import statsmodels.tsa.stattools as ts
 import matplotlib.pyplot as plt
 
-from coinbase_agg_crypto import crypto_wallet
 from datetime import datetime
+from coinbase_agg_crypto import crypto_wallet
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
 
 def transform_crypto_wallet():
@@ -42,6 +44,14 @@ def plot_crypto_prices(wallet_df):
     return norm_prices
 
 
+def calc_coint_agg_series(wallet_df):
+    for a1 in wallet_df.columns:
+        for a2 in wallet_df.columns:
+            if a1 != a2:
+                test_result = ts.coint(wallet_df[a1].fillna(0), wallet_df[a2].fillna(0))
+                print(a1 + " and " + a2 + ": p-value = " + str(test_result[1]))
+
+
 if __name__ == "__main__":
     print("\n")
     print("Importing currencies into today's crypto wallet")
@@ -55,6 +65,9 @@ if __name__ == "__main__":
     print("Plot normalized Crypto prices")
     c = plot_crypto_prices(b)
     print(c)
+    print("\n")
+    print("Calculate cointegration for each crypto pair")
+    calc_coint_agg_series(b)
     print("\n")
     print("Done")
 
