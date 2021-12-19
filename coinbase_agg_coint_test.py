@@ -70,4 +70,3 @@ if __name__ == "__main__":
     calc_coint_agg_series(b)
     print("\n")
     print("Done")
-
