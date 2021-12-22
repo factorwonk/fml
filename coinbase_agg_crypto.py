@@ -32,6 +32,22 @@ def crypto_wallet():
     return wallet_df
 
 
+def transform_crypto_wallet():
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
+    # init date
+    date = datetime.now().strftime("%Y%m%d")
+    # Get rid of index_col = 0 later on
+    df = pd.read_csv(os.path.join(path, f"coinbase_merged_{date}.csv"), index_col=0)
+    # Select either Ethereum or Bitcoin for now
+    df = df.reset_index()
+    # Pivot
+    pivot_df = df.pivot(index="date", columns="symbol", values="close")
+    df = pd.DataFrame(pivot_df.to_records()).set_index("date")
+    # Forward fill values with linear extrapolation
+    df = df.interpolate(method="linear", limit_area="inside")
+    return df
+
+
 if __name__ == "__main__":
     # Loop through and extract price data for various crypto currencies
     print("start...")

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from datetime import datetime
 from coinbase_agg_crypto import crypto_wallet
-from statsmodels.tsa.vector_ar.vecm import coint_johansen
+from statsmodels.tsa.vector_ar.vecm import coint_johansen, JohansenTestResult
 
 
 def transform_crypto_wallet():
@@ -41,15 +41,40 @@ def plot_crypto_prices(wallet_df):
     plt.xlabel("Days")
     plt.legend("Assets")
     plt.savefig(os.path.join(path, f"crypto_performance_{date}.png"))
+    plt.close(fig)
     return norm_prices
 
 
 def calc_coint_agg_series(wallet_df):
+    """Engle-Granger Two Step Cointegration
+
+    Args:
+        wallet_df ([DataFrame]): [Cryto wallet with prices up to a particular day]
+    """
     for a1 in wallet_df.columns:
         for a2 in wallet_df.columns:
             if a1 != a2:
                 test_result = ts.coint(wallet_df[a1].fillna(0), wallet_df[a2].fillna(0))
                 print(a1 + " and " + a2 + ": p-value = " + str(test_result[1]))
+
+
+def calc_joh_coint_agg_series(wallet_df):
+
+    """
+        Johansen cointegration test of the cointegration rank of a VECM
+        
+        Parameters
+        ----------
+        endog : array_like (nobs_tot x neqs)
+            Data to test
+        det_order : int
+            * -1 - no deterministic terms - model1
+            * 0 - constant term - model3
+            * 1 - linear trend
+        k_ar_diff : int, nonnegative
+            Number of lagged differences in the model.
+    """
+    return coint_johansen(wallet_df.fillna(0), 0, 1).lr1
 
 
 if __name__ == "__main__":
@@ -66,7 +91,12 @@ if __name__ == "__main__":
     c = plot_crypto_prices(b)
     print(c)
     print("\n")
-    print("Calculate cointegration for each crypto pair")
+    print("Calculate Engle Granger cointegration for each crypto pair")
     calc_coint_agg_series(b)
+    print("\n")
+    print("Calculate Johansen Cointegration of all pairs")
+    d = calc_joh_coint_agg_series(b)
+    print("\n")
+    print(d)
     print("\n")
     print("Done")
