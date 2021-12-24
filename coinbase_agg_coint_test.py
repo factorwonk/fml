@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from datetime import datetime
 from coinbase_agg_crypto import crypto_wallet
-from statsmodels.tsa.vector_ar.vecm import coint_johansen, JohansenTestResult
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
 
 def transform_crypto_wallet():
@@ -62,7 +62,6 @@ def calc_joh_coint_agg_series(wallet_df):
 
     """
         Johansen cointegration test of the cointegration rank of a VECM
-        
         Parameters
         ----------
         endog : array_like (nobs_tot x neqs)
