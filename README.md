@@ -1,10 +1,10 @@
-# Repository for the applications of ML to Crypto Portfolio Management
+# Repository to document the performance of automated pairs trading strategy using Crypto pairs.
 
 <div align="center">
     <br>
 </div>
 
->This repo is primarily the work of Abhishek Das and is used to document my exploration of Crypto data sets. Concepts and frameworks have been adopted from **Advances in Financial Machine Learning by Marcos Lopez De Prado**
+>This work by Abhishek Das  is used to determine the performance of pairs trading strategies on Crypto datasets.
 
 <div align="center">
     <br>
