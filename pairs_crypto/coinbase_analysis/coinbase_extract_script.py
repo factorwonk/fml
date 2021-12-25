@@ -12,7 +12,9 @@ def fetch_daily_data(symbol):
     # symbol must be in format XXX/XXX ie. BTC/EUR
     pair_split = symbol.split("/")
     symbol = pair_split[0] + "-" + pair_split[1]
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_data"
+    path = (
+        "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_data"
+    )
     url = f"https://api.pro.coinbase.com/products/{symbol}/candles?granularity=86400"
     response = requests.get(url)
     # check to make sure the response from server is good

@@ -132,5 +132,5 @@ dmypy.json
 .python-version
 
 # API input data and saved outputs
-coinbase_data/
-coinbase_outputs/
+pairs_crypto/coinbase_data/
+pairs_crypto/coinbase_outputs/

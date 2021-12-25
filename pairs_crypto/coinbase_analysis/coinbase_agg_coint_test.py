@@ -4,7 +4,7 @@ import statsmodels.tsa.stattools as ts
 import matplotlib.pyplot as plt
 
 from datetime import datetime
-from coinbase_agg_crypto import crypto_wallet
+from coinbase_analysis.coinbase_agg_crypto import crypto_wallet
 from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
 
@@ -28,7 +28,7 @@ def plot_crypto_prices(wallet_df):
     # Today's date
     date = datetime.now().strftime("%Y%m%d")
     # Output path
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_outputs"
     # Standardize by dividing by the first available value of each Crypto price
     norm_prices = [
         wallet_df[col].divide(wallet_df[col].loc[~wallet_df[col].isnull()].iloc[0])

@@ -1,13 +1,16 @@
-from coinbase_agg_crypto import crypto_wallet, transform_crypto_wallet
-from coinbase_agg_coint_test import (
+from coinbase_analysis.coinbase_agg_crypto import (
+    crypto_wallet,
+    transform_crypto_wallet,
+)
+from coinbase_analysis.coinbase_agg_coint_test import (
     calc_joh_coint_agg_series,
     plot_crypto_prices,
     calc_coint_agg_series,
 )
 from datetime import datetime
 
-if __name__ == "__main__":
 
+def run():
     """
     Putting it all together now:
     1. Extract historical crypto prices
@@ -19,6 +22,7 @@ if __name__ == "__main__":
     print("Downloading crypto wallet for %s" % datetime.now().strftime("%Y-%m-%d"))
     a = crypto_wallet()
     print("\n")
+    print(a)
     print("Transforming crypto wallet data to wide format:")
     b = transform_crypto_wallet()
     print(b)
@@ -38,3 +42,7 @@ if __name__ == "__main__":
     print(d)
     print("\n")
     print("Done!")
+
+
+if __name__ == "__main__":
+    main()

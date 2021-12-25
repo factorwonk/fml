@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-from coinbase_price_vol_dl_stats import import_crypto_ts
+from coinbase_analysis.coinbase_price_vol_dl_stats import import_crypto_ts
 from datetime import datetime
 
 
@@ -22,7 +22,7 @@ def crypto_wallet():
     # init date
     date = datetime.now().strftime("%Y%m%d")
     # init path
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_outputs"
     # init empty df
     wallet_df = pd.DataFrame()
     # Appending dataframes this way is not efficient. Append to a list first, then convert to DF
@@ -33,7 +33,7 @@ def crypto_wallet():
 
 
 def transform_crypto_wallet():
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_outputs"
     # init date
     date = datetime.now().strftime("%Y%m%d")
     # Get rid of index_col = 0 later on

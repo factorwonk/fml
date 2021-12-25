@@ -3,13 +3,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from coinbase_extract_script import fetch_daily_data
+from coinbase_analysis.coinbase_extract_script import fetch_daily_data
 from datetime import datetime
 
 
 def import_crypto_ts(symbol):
     date = datetime.now().strftime("%Y%m%d")
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_data"
+    path = (
+        "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_data"
+    )
     fetch_daily_data(symbol)
     df = pd.read_csv(
         os.path.join(
