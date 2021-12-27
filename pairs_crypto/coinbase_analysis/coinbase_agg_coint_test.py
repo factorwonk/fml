@@ -51,11 +51,15 @@ def calc_coint_agg_series(wallet_df):
     Args:
         wallet_df ([DataFrame]): [Cryto wallet with prices up to a particular day]
     """
+    list_pairs = []
     for a1 in wallet_df.columns:
         for a2 in wallet_df.columns:
             if a1 != a2:
                 test_result = ts.coint(wallet_df[a1].fillna(0), wallet_df[a2].fillna(0))
-                print(a1 + " and " + a2 + ": p-value = " + str(test_result[1]))
+                # print(a1 + " and " + a2 + ": p-value = " + str(test_result[1]))
+                list_pairs.append([a1, a2, test_result[1]])
+    print(list_pairs)
+    return list_pairs
 
 
 def calc_joh_coint_agg_series(wallet_df):
@@ -74,6 +78,15 @@ def calc_joh_coint_agg_series(wallet_df):
             Number of lagged differences in the model.
     """
     return coint_johansen(wallet_df.fillna(0), 0, 1).lr1
+
+
+def identify_significant_pairs(list_pairs):
+    """Takes in a a list of lists, which include the pairs and the third element of each list is L.O.S.
+
+    Args:
+        list_pairs (list of lists): First element is crypto pair 1, second element crypto pair 2 and third element is L.O.S.
+    """
+    return [x for x in list_pairs if x[2] <= 0.05]
 
 
 if __name__ == "__main__":

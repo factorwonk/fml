@@ -6,6 +6,7 @@ from coinbase_analysis.coinbase_agg_coint_test import (
     calc_joh_coint_agg_series,
     plot_crypto_prices,
     calc_coint_agg_series,
+    identify_significant_pairs,
 )
 from datetime import datetime
 
@@ -35,14 +36,20 @@ def run():
     print("\n")
     print("Reporting pairwise ADF cointegration values:")
     print("\n")
-    calc_coint_agg_series(b)
+    d = calc_coint_agg_series(b)
+    print(d)
     print("\n")
     print("Reporting Johansen statistics for all series")
-    d = calc_joh_coint_agg_series(b)
-    print(d)
+    e = calc_joh_coint_agg_series(b)
+    print(e)
+    print("\n")
+    print("These are the significant pairs:")
+    print("\n")
+    f = identify_significant_pairs(d)
+    print(f)
     print("\n")
     print("Done!")
 
 
 if __name__ == "__main__":
-    main()
+    run()
