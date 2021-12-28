@@ -8,6 +8,10 @@ from coinbase_analysis.coinbase_agg_coint_test import (
     calc_coint_agg_series,
     identify_significant_pairs,
 )
+from coinbase_analysis.coinbase_fit_spread_oruh import (
+    filter_significant_pairs,
+    pivot_input_dataframe,
+)
 from datetime import datetime
 
 
@@ -47,6 +51,15 @@ def run():
     print("\n")
     f = identify_significant_pairs(d)
     print(f)
+    print("\n")
+    print("Filter significant pairs:")
+    print("\n")
+    g = pivot_input_dataframe()
+    print(g)
+    print("\n")
+    h = filter_significant_pairs(g, f)
+    print("Subsetted DataFrame with significant pairs:\n")
+    print(h)
     print("\n")
     print("Done!")
 
