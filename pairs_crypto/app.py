@@ -11,6 +11,7 @@ from coinbase_analysis.coinbase_agg_coint_test import (
 from coinbase_analysis.coinbase_fit_spread_oruh import (
     filter_significant_pairs,
     pivot_input_dataframe,
+    regression,
 )
 from datetime import datetime
 
@@ -60,6 +61,19 @@ def run():
     h = filter_significant_pairs(g, f)
     print("Subsetted DataFrame with significant pairs:\n")
     print(h)
+    print("\n")
+    print(h.iloc[:, 0])
+    print("\n")
+    print(h.iloc[:, 1])
+    print("\n")
+    print("Get Regression Value for each pair:\n")
+    x, y, z = regression(h.iloc[:, 0], h.iloc[:, 1].fillna(0))
+    print("\n")
+    print(x)
+    print("\n")
+    print(y)
+    print("\n")
+    print(z)
     print("\n")
     print("Done!")
 
