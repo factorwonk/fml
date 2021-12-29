@@ -29,8 +29,9 @@ def run():
     3. Determine if cointegration is significant
     4. Fit spread for significant cointegration
     """
+    today = datetime.now().strftime("%Y-%m-%d")
     print("\n")
-    print("Downloading crypto wallet for %s" % datetime.now().strftime("%Y-%m-%d"))
+    print("Downloading crypto wallet for %s" % str(today))
     a = crypto_wallet()
     print("\n")
     print(a)
