@@ -9,21 +9,6 @@ from numpy.linalg import inv
 from scipy.stats import iqr
 
 
-def pivot_input_dataframe():
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_outputs"
-    # init date
-    date = datetime.now().strftime("%Y%m%d")
-    # Read in today's dataset
-    df = pd.read_csv(
-        os.path.join(path, f"coinbase_merged_{date}.csv"), index_col=0
-    ).reset_index()
-    pivot_df = df.pivot(index="date", columns="symbol", values="close")
-    df_output = pd.DataFrame(pivot_df.to_records()).set_index("date")
-    print("\nReturning historical close prices\n")
-    print(df_output)
-    return df_output
-
-
 def filter_significant_pairs(df_output, significant_pairs):
     cp_list = []
     # Count significant pairs
@@ -135,7 +120,7 @@ def fit_spread_oruh(residuals):
     iqr_ds = iqr(diffusion_or_uh) * 4
     lim = [iqr_mr, iqr_sr, iqr_spr, iqr_ds]
 
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_outputs"
     date = datetime.now().strftime("%Y%m%d")
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(24, 24), sharex=True)
     # fig.suptitle("Trading Sessions")

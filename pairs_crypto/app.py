@@ -10,10 +10,15 @@ from coinbase_analysis.coinbase_agg_coint_test import (
 )
 from coinbase_analysis.coinbase_fit_spread_oruh import (
     filter_significant_pairs,
-    pivot_input_dataframe,
     regression,
+    fit_spread_oruh,
 )
 from datetime import datetime
+
+
+def fillna_pivoted_df(input_df):
+    output_df = input_df.fillna(0)
+    return output_df
 
 
 def run():
@@ -29,7 +34,7 @@ def run():
     a = crypto_wallet()
     print("\n")
     print(a)
-    print("Transforming crypto wallet data to wide format:")
+    print("Transforming crypto wallet data to wide format:\n")
     b = transform_crypto_wallet()
     print(b)
     print("\n")
@@ -53,28 +58,31 @@ def run():
     f = identify_significant_pairs(d)
     print(f)
     print("\n")
-    print("Filter significant pairs:")
+    print("Filtering for significant pairs:")
     print("\n")
-    g = pivot_input_dataframe()
+    g = fillna_pivoted_df(b)
     print(g)
     print("\n")
     h = filter_significant_pairs(g, f)
     print("Subsetted DataFrame with significant pairs:\n")
     print(h)
     print("\n")
-    print(h.iloc[:, 0])
+    print(h.iloc[:, 2])
     print("\n")
-    print(h.iloc[:, 1])
+    print(h.iloc[:, 3])
     print("\n")
     print("Get Regression Value for each pair:\n")
-    x, y, z = regression(h.iloc[:, 0], h.iloc[:, 1].fillna(0))
-    print("\n")
+    x, y, z = regression(h.iloc[:, 2], h.iloc[:, 3])
+    print("\nCoefficients:\n")
     print(x)
-    print("\n")
+    print("\nIntercept\n")
     print(y)
-    print("\n")
+    print("\nResiduals\n")
     print(z)
     print("\n")
+    print("Fit the spread to the OH process")
+    print("\n")
+    fit_spread_oruh(z)
     print("Done!")
 
 

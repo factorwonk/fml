@@ -37,24 +37,31 @@ def transform_crypto_wallet():
     # init date
     date = datetime.now().strftime("%Y%m%d")
     # Get rid of index_col = 0 later on
-    df = pd.read_csv(os.path.join(path, f"coinbase_merged_{date}.csv"), index_col=0)
-    # Select either Ethereum or Bitcoin for now
-    df = df.reset_index()
+    df = pd.read_csv(
+        os.path.join(path, f"coinbase_merged_{date}.csv"), index_col=0
+    ).reset_index()
     # Pivot
     pivot_df = df.pivot(index="date", columns="symbol", values="close")
-    df = pd.DataFrame(pivot_df.to_records()).set_index("date")
+    output_df = pd.DataFrame(pivot_df.to_records()).set_index("date")
     # Forward fill values with linear extrapolation
-    df = df.interpolate(method="linear", limit_area="inside")
-    return df
+    output_df = output_df.interpolate(method="linear", limit_area="inside")
+    # Don't backfill missing values with zero just yet.
+    # output_df = output_df.fillna(0)
+    return output_df
 
 
 if __name__ == "__main__":
     # Loop through and extract price data for various crypto currencies
     print("start...")
     print("\n")
-    print("Extracting historical price and volume data from Coinbase...")
+    print("Extracting historical price and volume data from Coinbase...\n")
     a = crypto_wallet()
-    print(a.tail(10))
+    print(a.head(10))
     print("\n")
-    print("Saving to output folder...")
-    print("done...")
+    print("Pivot crypto wallet...\n")
+    b = transform_crypto_wallet()
+    print(b.head(10))
+    print("\n")
+    print("See the tail of this crypto wallet\n")
+    print(b.tail(10))
+    print("\nDone...")
