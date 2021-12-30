@@ -3,48 +3,10 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-
 from datetime import datetime
 from numpy.linalg import inv
 from scipy.stats import t
-
-
-def transform_data():
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//coinbase_outputs"
-    # init date
-    date = datetime.now().strftime("%Y%m%d")
-    # Get rid of index_col = 0 later on
-    df = pd.read_csv(os.path.join(path, f"coinbase_merged_{date}.csv"), index_col=0)
-    # Select either Ethereum or Bitcoin for now
-    df = df[(df.symbol == "ETH/USD") | (df.symbol == "BTC/USD")].reset_index()
-    # Pivot
-    pivot_df = df.pivot(index="date", columns="symbol", values="close")
-    df = pd.DataFrame(pivot_df.to_records()).set_index("date")
-    return df
-
-
-def regression(xdata, ydata):
-    flag = 0
-    if isinstance(xdata, pd.DataFrame):
-        flag = 1
-    xdat = pd.DataFrame(xdata)
-    xdat["b0"] = 1
-    xdat = xdat.values
-    ydata = ydata.values
-    n = np.dot(xdat.T, xdat)
-    beta = np.dot(np.dot(inv(n), xdat.T), ydata)
-    coef = beta[0:-1]
-    intercept = beta[-1]
-
-    if flag == 1:
-        xdata.drop(labels="b0", axis=1, inplace=True)
-        temp = coef * xdata
-        residuals = ydata - temp.sum(axis=1) - intercept
-    else:
-        coef = coef[0]
-        residuals = ydata - coef * xdata - intercept
-
-    return coef, intercept, residuals.values
+from coinbase_analysis.coinbase_utilities import regression
 
 
 def calc_residuals(df):
@@ -272,11 +234,12 @@ def test_cointegration(xdata, ydata, stat_value_ci, sig_value_ci, s1, s2):
 
 
 if __name__ == "__main__":
-    print("Going to extract and transform the data from csv...")
-    print("\n")
-    a = transform_data()
-    print(a)
-    print("\n")
+    print("Done")
+    # print("Going to extract and transform the data from csv...")
+    # print("\n")
+    # a = transform_data()
+    # print(a)
+    # print("\n")
     # print("Here's basic regression")
     # x = regression(a.iloc[:, 0], a.iloc[:, 1])
     # print("Here's just the residuals")
@@ -292,14 +255,15 @@ if __name__ == "__main__":
     # c = test_significance(a.iloc[:, 0], a.iloc[:, 1], b)
     # print(c)
     # print("\n")
-    print("Test against critical t-value of ADF and ECM")
-    d = test_cointegration(
-        a.iloc[:, 0],
-        a.iloc[:, 1],
-        stat_value_ci=0.95,
-        sig_value_ci=0.95,
-        s1=str(list(a.columns.values)[0]),
-        s2=str(list(a.columns.values)[1]),
-    )
-    print(d)
-    print("Done!")
+
+    # print("Test against critical t-value of ADF and ECM")
+    # d = test_cointegration(
+    #     a.iloc[:, 0],
+    #     a.iloc[:, 1],
+    #     stat_value_ci=0.95,
+    #     sig_value_ci=0.95,
+    #     s1=str(list(a.columns.values)[0]),
+    #     s2=str(list(a.columns.values)[1]),
+    # )
+    # print(d)
+    # print("Done!")

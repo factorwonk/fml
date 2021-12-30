@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 
 from datetime import datetime
-from numpy.linalg import inv
 from scipy.stats import iqr
+from coinbase_analysis.coinbase_utilities import regression
 
 
 def filter_significant_pairs(df_output, significant_pairs):
@@ -35,30 +35,6 @@ def filter_significant_pairs(df_output, significant_pairs):
     ]
     df_sig = df_output[cp_pairs]
     return df_sig
-
-
-def regression(xdata, ydata):
-    flag = 0
-    if isinstance(xdata, pd.DataFrame):
-        flag = 1
-    xdat = pd.DataFrame(xdata)
-    xdat["b0"] = 1
-    xdat = xdat.values
-    ydata = ydata.values
-    n = np.dot(xdat.T, xdat)
-    beta = np.dot(np.dot(inv(n), xdat.T), ydata)
-    coef = beta[0:-1]
-    intercept = beta[-1]
-
-    if flag == 1:
-        xdata.drop(labels="b0", axis=1, inplace=True)
-        temp = coef * xdata
-        residuals = ydata - temp.sum(axis=1) - intercept
-    else:
-        coef = coef[0]
-        residuals = ydata - coef * xdata - intercept
-
-    return coef, intercept, residuals.values
 
 
 def fit_spread_oruh(residuals):

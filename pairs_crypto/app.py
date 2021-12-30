@@ -8,17 +8,21 @@ from coinbase_analysis.coinbase_agg_coint_test import (
     calc_coint_agg_series,
     identify_significant_pairs,
 )
+from coinbase_analysis.coinbase_test_cointegration import (
+    test_stationarity,
+    test_significance,
+    test_cointegration,
+)
 from coinbase_analysis.coinbase_fit_spread_oruh import (
     filter_significant_pairs,
-    regression,
     fit_spread_oruh,
 )
+from coinbase_analysis.coinbase_utilities import (
+    fillna_pivoted_df,
+    calc_corr_matrix,
+    regression,
+)
 from datetime import datetime
-
-
-def fillna_pivoted_df(input_df):
-    output_df = input_df.fillna(0)
-    return output_df
 
 
 def run():
@@ -27,7 +31,7 @@ def run():
     1. Extract historical crypto prices
     2. Calculate cointegration for all crypto pairs
     3. Determine if cointegration is significant
-    4. Fit spread for significant cointegration
+    4. Fit spread for significant cointegration to OH process
     """
     today = datetime.now().strftime("%Y-%m-%d")
     print("\n")
@@ -59,13 +63,15 @@ def run():
     f = identify_significant_pairs(d)
     print(f)
     print("\n")
-    print("Filtering for significant pairs:")
-    print("\n")
     g = fillna_pivoted_df(b)
     print(g)
     print("\n")
+    print("Here are the correlations between the pairs:\n")
+    g_corr = calc_corr_matrix(g)
+    print(g_corr)
+    print("\n")
+    print("Filtering for significant pairs:\n")
     h = filter_significant_pairs(g, f)
-    print("Subsetted DataFrame with significant pairs:\n")
     print(h)
     print("\n")
     print(h.iloc[:, 2])
@@ -80,6 +86,25 @@ def run():
     print(y)
     print("\nResiduals\n")
     print(z)
+    print("\n")
+    print("Test the stationarity of the pair:\n")
+    zz = test_stationarity(z)
+    print(z)
+    print("\n")
+    print("Test the significance of these residuals:\n")
+    yy = test_significance(h.iloc[:, 2], h.iloc[:, 3], z)
+    print(yy)
+    print("\n")
+    print("Test against critical t-value of ADF and ECM\n")
+    dd = test_cointegration(
+        h.iloc[:, 2],
+        h.iloc[:, 3],
+        stat_value_ci=0.95,
+        sig_value_ci=0.95,
+        s1=str(list(h.columns.values)[0]),
+        s2=str(list(h.columns.values)[1]),
+    )
+    print(dd)
     print("\n")
     print("Fit the spread to the OH process")
     print("\n")
