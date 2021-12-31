@@ -106,7 +106,7 @@ def run():
     )
     print(dd)
     print("\n")
-    print("Fit the spread to the OH process")
+    print("Fit the spread of the residuals to the Ornstein-Uhlenbeck process")
     print("\n")
     fit_spread_oruh(z)
     print("Done!")

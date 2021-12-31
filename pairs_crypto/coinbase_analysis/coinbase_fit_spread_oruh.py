@@ -90,6 +90,7 @@ def fit_spread_oruh(residuals):
         )
     )
 
+    # interquartile range
     iqr_mr = iqr(mean_r) * 4
     iqr_sr = iqr(diffusion_eq) * 4
     iqr_spr = iqr(mean_reversion_speed) * 4
