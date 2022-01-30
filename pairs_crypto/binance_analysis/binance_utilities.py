@@ -3,19 +3,21 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
-# Reequires pyarrow and fastparquet libraries to be loaded in
+# Requires pyarrow and fastparquet libraries to be loaded in
 
 
 def load_single_binance_pair(symbol) -> pd.DataFrame:
-    """Returns a dataframe containing minute-wise trade data for crypto pair sourced from binance
+    """Returns a dataframe containing minute-wise trade data for
+    crypto pair sourced from binance
 
     Args:
         symbol (string): Crypto pair symbol to be sourced from binance
 
     Returns:
-        DataFrame: Dataframe containing time, symbol, open, close and volume data for crypto pair
+        DataFrame: Dataframe containing time, symbol, open, close and
+        volume data for crypto pair
     """
     # Hardcode path for binance data - for now
     path = (
@@ -23,8 +25,14 @@ def load_single_binance_pair(symbol) -> pd.DataFrame:
     )
     try:
         df = pd.read_parquet(os.path.join(path, "%s.parquet" % symbol))
-        select_cols = ["open", "volume", "number_of_trades"]
+        select_cols = ["close", "volume", "number_of_trades"]
         df = df[select_cols].reset_index()
+        # Convert open_time to pandas timestamp
+        df["open_time"] = pd.to_datetime(df["open_time"])
+        # Add close time to DataFrame
+        df["close_time"] = df["open_time"] + timedelta(minutes=1)
+        # Drop open_time
+        df.drop("open_time", axis=1, inplace=True)
         # Add symbol column as identifier
         df["symbol"] = str(symbol.replace("-", "_"))
         return df
@@ -32,11 +40,26 @@ def load_single_binance_pair(symbol) -> pd.DataFrame:
         print("An exception occurred: {}".format(error))
 
 
+def chart_1min_binance_price_vols(input_df, symbol):
+    # init date
+    date = datetime.now().strftime("%Y%m%d")
+    # init path
+    save_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs//"
+    fig, (ax1, ax2) = plt.subplots(2, figsize=(10, 8), sharex=True)
+    fig.suptitle("Close Price and Volume Charts")
+    ax1.plot(input_df["close_time"], input_df["close"], label="Close Price")
+    ax2.plot(input_df["close_time"], input_df["volume"], label="Volume")
+    plt.legend("Close Price and Volume History")
+    plt.savefig(os.path.join(save_path, f"%s_price_vol_{date}.png" % symbol))
+    plt.close(fig)
+
+
 def load_binance_wallet() -> pd.DataFrame:
-    """[summary]
+    """Takes an input list of crypto-pairs and returns their time series history
 
     Returns:
-        pd.DataFrame: [description]
+        pd.DataFrame: Returns a DataFrame with close price, volume,
+        number of trades, close time and symbol
     """
     # Init date = today
     date = datetime.now().strftime("%Y%m%d")
@@ -64,25 +87,9 @@ def load_binance_wallet() -> pd.DataFrame:
     return wallet_df
 
 
-def chart_1min_binance_price_vols(input_df, symbol):
-    # init date
-    date = datetime.now().strftime("%Y%m%d")
-    # init path
-    save_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs//"
-    fig, (ax1, ax2) = plt.subplots(2, figsize=(10, 8), sharex=True)
-    fig.suptitle("Close Price and Volume Charts")
-    ax1.plot(input_df["open_time"], input_df["open"], label="Open Price")
-    ax2.plot(input_df["open_time"], input_df["volume"], label="Volume")
-    plt.legend("Price and Volume History")
-    plt.savefig(os.path.join(save_path, f"%s_price_vol_{date}.png" % symbol))
-    plt.close(fig)
-
-
 if __name__ == "__main__":
     print("\nStart loading 1 minute Binance Data\n")
-    print(
-        "Enter the Crypto symbol you want price and volume history for: BTC-USDT; ETH-USDT etc"
-    )
+    print("Enter Crypto symbol pair: BTC-USDT; ETH-USDT etc")
     crypto_symbol = input()
     print("\n %s pair history \n" % str(crypto_symbol))
     a = load_single_binance_pair(crypto_symbol)
