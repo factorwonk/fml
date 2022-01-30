@@ -79,16 +79,16 @@ def chart_1min_binance_price_vols(input_df, symbol):
 
 
 if __name__ == "__main__":
-    # print("\nStart loading 1 minute Binance Data\n")
-    # print(
-    #     "Enter the Crypto symbol you want price and volume history for: BTC-USDT; ETH-USDT etc"
-    # )
-    # crypto_symbol = input()
-    # print("\n %s pair history \n" % str(crypto_symbol))
-    # a = load_single_binance_pair(crypto_symbol)
-    # print(a)
-    # print("\nCharting the price and volume for %s\n" % str(crypto_symbol))
-    # chart_1min_binance_price_vols(a, crypto_symbol)
+    print("\nStart loading 1 minute Binance Data\n")
+    print(
+        "Enter the Crypto symbol you want price and volume history for: BTC-USDT; ETH-USDT etc"
+    )
+    crypto_symbol = input()
+    print("\n %s pair history \n" % str(crypto_symbol))
+    a = load_single_binance_pair(crypto_symbol)
+    print(a)
+    print("\nCharting the price and volume for %s\n" % str(crypto_symbol))
+    chart_1min_binance_price_vols(a, crypto_symbol)
     print("\n Loading in the entire Binance Crypto Wallet\n")
     b = load_binance_wallet()
     print(b)
