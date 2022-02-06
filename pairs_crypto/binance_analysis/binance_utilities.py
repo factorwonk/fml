@@ -1,4 +1,5 @@
 import os
+import warnings
 import pandas as pd
 
 import matplotlib.pyplot as plt
@@ -40,7 +41,7 @@ def load_single_binance_pair(symbol) -> pd.DataFrame:
         print("An exception occurred: {}".format(error))
 
 
-def chart_1min_binance_price_vols(input_df, symbol):
+def chart_1min_binance_pair_price_vol(input_df, symbol):
     # init date
     date = datetime.now().strftime("%Y%m%d")
     # init path
@@ -54,7 +55,7 @@ def chart_1min_binance_price_vols(input_df, symbol):
     plt.close(fig)
 
 
-def load_binance_wallet() -> pd.DataFrame:
+def load_binance_wallet(input_array) -> pd.DataFrame:
     """Takes an input list of crypto-pairs and returns their time series history
 
     Returns:
@@ -66,16 +67,7 @@ def load_binance_wallet() -> pd.DataFrame:
     # Init path
     output_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs//"
     # Init binance wallet
-    crypto_array = [
-        "ADA-USDT",
-        "BTC-USDT",
-        "DOGE-USDT",
-        "ETH-USDT",
-        "LTC-USDT",
-        "MATIC-USDT",
-        "SOL-USDT",
-        "ZEC-USDT",
-    ]
+    crypto_array = input_array
     # init empty df
     wallet_df = pd.DataFrame()
     # Appending dataframes this way is not efficient. Append to a list first, then convert to DF
@@ -87,16 +79,94 @@ def load_binance_wallet() -> pd.DataFrame:
     return wallet_df
 
 
+def pivot_binance_wallet():
+    # Must be run after the binance wallet is loaded
+    read_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs//"
+    # init date
+    date = datetime.now().strftime("%Y%m%d")
+    with warnings.catch_warnings():
+        warnings.simplefilter(action="ignore", category=FutureWarning)
+        # Get rid of index_col = 0 later on
+        df = pd.read_csv(
+            os.path.join(read_path, f"binance_merged_{date}.csv"), index_col=0
+        ).reset_index()
+        # Pivot
+        pivot_df = df.pivot(index="close_time", columns="symbol", values="close")
+        output_df = pd.DataFrame(pivot_df.to_records()).set_index("close_time")
+        # Forward fill values with linear extrapolation if required
+        output_df = output_df.interpolate(method="linear", limit_area="inside")
+        # Don't backfill missing values with zero just yet.
+        # output_df = output_df.fillna(0)
+    return output_df
+
+
+def norm_binance_wallet(wallet_df) -> pd.DataFrame:
+    """Normalize price history of crypto wallet dataframe dividing by 
+    the first available value for each crypto pair
+
+    Args:
+        wallet_df (DataFrame): Output of pivot_binance_wallet function
+
+    Returns:
+        pd.DataFrame: [description]
+    """
+    norm_wallet = [
+        wallet_df[col].divide(wallet_df[col].loc[~wallet_df[col].isnull()].iloc[0])
+        for col in wallet_df.columns
+    ]
+    norm_wallet = pd.DataFrame(norm_wallet).transpose()
+    return norm_wallet
+
+
+def plot_crypto_prices(wallet_df):
+    # Today's date
+    date = datetime.now().strftime("%Y%m%d")
+    # Output path
+    path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_outputs"
+    # Standardize by dividing by the first available value of each Crypto price
+    norm_prices = [
+        wallet_df[col].divide(wallet_df[col].loc[~wallet_df[col].isnull()].iloc[0])
+        for col in wallet_df.columns
+    ]
+    norm_prices = pd.DataFrame(norm_prices).transpose()
+    fig, ax = plt.subplots(1, figsize=(10, 8))
+    fig.suptitle("Performance of Cryptocurrencies")
+    ax.plot(norm_prices)
+    plt.xlabel("Days")
+    plt.legend("Assets")
+    plt.savefig(os.path.join(path, f"crypto_performance_{date}.png"))
+    plt.close(fig)
+    return norm_prices
+
+
 if __name__ == "__main__":
-    print("\nStart loading 1 minute Binance Data\n")
-    print("Enter Crypto symbol pair: BTC-USDT; ETH-USDT etc")
-    crypto_symbol = input()
-    print("\n %s pair history \n" % str(crypto_symbol))
-    a = load_single_binance_pair(crypto_symbol)
+    # print("\nStart loading 1 minute Binance Data\n")
+    # print("Enter Crypto symbol pair: BTC-USDT; ETH-USDT etc")
+    # crypto_symbol = input()
+    # print("\n %s pair history \n" % str(crypto_symbol))
+    # a = load_single_binance_pair(crypto_symbol)
+    # print(a)
+    # print("\nCharting the price and volume for %s\n" % str(crypto_symbol))
+    # chart_1min_binance_pair_price_vol(a, crypto_symbol)
+    today = datetime.now().strftime("%Y-%m-%d")
+    crypto_array = [
+        "ADA-USDT",
+        "BTC-USDT",
+        "DOGE-USDT",
+        "ETH-USDT",
+        "LTC-USDT",
+        "MATIC-USDT",
+        "SOL-USDT",
+        "ZEC-USDT",
+    ]
+    print("\n Loading in the entire Binance Crypto Wallet on", today)
+    print("\n")
+    a = load_binance_wallet(crypto_array)
     print(a)
-    print("\nCharting the price and volume for %s\n" % str(crypto_symbol))
-    chart_1min_binance_price_vols(a, crypto_symbol)
-    print("\n Loading in the entire Binance Crypto Wallet\n")
-    b = load_binance_wallet()
+    print("\n Pivot loaded crypto wallet \n")
+    b = pivot_binance_wallet()
     print(b)
+    print("\n Normalize crypto wallet with prices starting at 1.0 \n")
+    c = norm_binance_wallet(b)
+    print(c)
     print("Done!\n")
