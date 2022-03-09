@@ -100,7 +100,7 @@ def pivot_binance_wallet():
     return output_df
 
 
-def norm_binance_wallet(wallet_df) -> pd.DataFrame:
+def normalize_binance_wallet(wallet_df) -> pd.DataFrame:
     """Normalize price history of crypto wallet dataframe dividing by 
     the first available value for each crypto pair
 
@@ -110,33 +110,39 @@ def norm_binance_wallet(wallet_df) -> pd.DataFrame:
     Returns:
         pd.DataFrame: [description]
     """
+    # init date
+    date = datetime.now().strftime("%Y%m%d")
     norm_wallet = [
         wallet_df[col].divide(wallet_df[col].loc[~wallet_df[col].isnull()].iloc[0])
         for col in wallet_df.columns
     ]
     norm_wallet = pd.DataFrame(norm_wallet).transpose()
+    # Write out normalized wallet to folder
+    save_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs//"
+    norm_wallet.to_csv(
+        os.path.join(save_path, f"binance_normalized_{date}.csv"), index=False
+    )
     return norm_wallet
 
 
-def plot_crypto_prices(wallet_df):
+def plot_binance_wallet():
     # Today's date
     date = datetime.now().strftime("%Y%m%d")
+    # Path to input dataframe
+    input_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs"
+    norm_wallet_df = pd.read_csv(
+        os.path.join(input_path, f"binance_normalized_{date}.csv")
+    )
     # Output path
-    path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//coinbase_outputs"
-    # Standardize by dividing by the first available value of each Crypto price
-    norm_prices = [
-        wallet_df[col].divide(wallet_df[col].loc[~wallet_df[col].isnull()].iloc[0])
-        for col in wallet_df.columns
-    ]
-    norm_prices = pd.DataFrame(norm_prices).transpose()
-    fig, ax = plt.subplots(1, figsize=(10, 8))
+    output_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs"
+    fig, ax = plt.subplots(1, figsize=(15, 8))
     fig.suptitle("Performance of Cryptocurrencies")
-    ax.plot(norm_prices)
-    plt.xlabel("Days")
+    ax.plot(norm_wallet_df)
+    plt.xlabel("History")
     plt.legend("Assets")
-    plt.savefig(os.path.join(path, f"crypto_performance_{date}.png"))
+    plt.savefig(os.path.join(output_path, f"crypto_performance_{date}.png"))
     plt.close(fig)
-    return norm_prices
+    return norm_wallet_df
 
 
 if __name__ == "__main__":
@@ -167,6 +173,8 @@ if __name__ == "__main__":
     b = pivot_binance_wallet()
     print(b)
     print("\n Normalize crypto wallet with prices starting at 1.0 \n")
-    c = norm_binance_wallet(b)
+    c = normalize_binance_wallet(b)
     print(c)
+    print("\n Plotting normalized crypto price series \n")
+    plot_binance_wallet()
     print("Done!\n")
