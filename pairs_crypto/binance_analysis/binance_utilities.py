@@ -100,7 +100,7 @@ def pivot_binance_wallet():
     return output_df
 
 
-def normalize_binance_wallet(wallet_df) -> pd.DataFrame:
+def plot_normalized_binance_wallet(wallet_df) -> pd.DataFrame:
     """Normalize price history of crypto wallet dataframe dividing by 
     the first available value for each crypto pair
 
@@ -112,17 +112,27 @@ def normalize_binance_wallet(wallet_df) -> pd.DataFrame:
     """
     # init date
     date = datetime.now().strftime("%Y%m%d")
-    norm_wallet = [
+    # output path
+    save_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs//"
+    norm_prices = [
         wallet_df[col].divide(wallet_df[col].loc[~wallet_df[col].isnull()].iloc[0])
         for col in wallet_df.columns
     ]
-    norm_wallet = pd.DataFrame(norm_wallet).transpose()
-    # Write out normalized wallet to folder
-    save_path = "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_outputs//"
-    norm_wallet.to_csv(
-        os.path.join(save_path, f"binance_normalized_{date}.csv"), index=False
-    )
-    return norm_wallet
+    norm_prices = pd.DataFrame(norm_prices).transpose()
+    ##############################################
+    #    Write out normalized wallet to folder   #
+    ##############################################
+    # norm_wallet.to_csv(
+    #     os.path.join(save_path, f"binance_normalized_{date}.csv"), index=False
+    # )
+    fig, ax = plt.subplots(1, figsize=(16, 8))
+    fig.suptitle("Performance of Cryptocurrencies")
+    ax.plot(norm_prices)
+    plt.xlabel("Time")
+    plt.legends("COINS")
+    plt.savefig(os.path.join(save_path, f"crypto_performance_{date}.png"))
+    plt.close(fig)
+    return norm_prices
 
 
 def plot_binance_wallet():
@@ -173,7 +183,7 @@ if __name__ == "__main__":
     b = pivot_binance_wallet()
     print(b)
     print("\n Normalize crypto wallet with prices starting at 1.0 \n")
-    c = normalize_binance_wallet(b)
+    c = plot_normalized_binance_wallet(b)
     print(c)
     print("\n Plotting normalized crypto price series \n")
     plot_binance_wallet()
