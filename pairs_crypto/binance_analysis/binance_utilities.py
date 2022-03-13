@@ -100,7 +100,7 @@ def pivot_binance_wallet():
     return output_df
 
 
-def plot_normalized_binance_wallet(wallet_df) -> pd.DataFrame:
+def normalize_binance_wallet(wallet_df) -> pd.DataFrame:
     """Normalize price history of crypto wallet dataframe dividing by 
     the first available value for each crypto pair
 
@@ -119,23 +119,14 @@ def plot_normalized_binance_wallet(wallet_df) -> pd.DataFrame:
         for col in wallet_df.columns
     ]
     norm_prices = pd.DataFrame(norm_prices).transpose()
-    ##############################################
-    #    Write out normalized wallet to folder   #
-    ##############################################
-    # norm_wallet.to_csv(
-    #     os.path.join(save_path, f"binance_normalized_{date}.csv"), index=False
-    # )
-    fig, ax = plt.subplots(1, figsize=(16, 8))
-    fig.suptitle("Performance of Cryptocurrencies")
-    ax.plot(norm_prices)
-    plt.xlabel("Time")
-    plt.legends("COINS")
-    plt.savefig(os.path.join(save_path, f"crypto_performance_{date}.png"))
-    plt.close(fig)
+    # Write out normalized wallet to folder
+    norm_prices.to_csv(
+        os.path.join(save_path, f"binance_normalized_{date}.csv"), index=False
+    )
     return norm_prices
 
 
-def plot_binance_wallet():
+def plot_normalized_binance_wallet():
     # Today's date
     date = datetime.now().strftime("%Y%m%d")
     # Path to input dataframe
@@ -149,7 +140,7 @@ def plot_binance_wallet():
     fig.suptitle("Performance of Cryptocurrencies")
     ax.plot(norm_wallet_df)
     plt.xlabel("History")
-    plt.legend("Assets")
+    plt.legend("COINS")
     plt.savefig(os.path.join(output_path, f"crypto_performance_{date}.png"))
     plt.close(fig)
     return norm_wallet_df
@@ -183,8 +174,8 @@ if __name__ == "__main__":
     b = pivot_binance_wallet()
     print(b)
     print("\n Normalize crypto wallet with prices starting at 1.0 \n")
-    c = plot_normalized_binance_wallet(b)
+    c = normalize_binance_wallet(b)
     print(c)
     print("\n Plotting normalized crypto price series \n")
-    plot_binance_wallet()
+    plot_normalized_binance_wallet()
     print("Done!\n")
