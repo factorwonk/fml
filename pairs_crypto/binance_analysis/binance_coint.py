@@ -5,6 +5,7 @@ import statsmodels.tsa.stattools as ts
 import matplotlib.pyplot as plt
 
 from datetime import datetime
+from binance_utilities import load_binance_wallet, pivot_binance_wallet
 from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
 
@@ -23,3 +24,21 @@ def calc_coint_agg_series(wallet_df):
     print(list_pairs)
     return list_pairs
 
+
+if __name__ == "__main__":
+    today = datetime.now().strftime("%Y-%m-%d")
+    crypto_array = [
+        "ADA-USDT",
+        "BTC-USDT",
+        "DOGE-USDT",
+        "ETH-USDT",
+        "LTC-USDT",
+        "MATIC-USDT",
+        "SOL-USDT",
+        "ZEC-USDT",
+    ]
+    print("\n Loading in the entire Binance Crypto Wallet on", today)
+    print("\n")
+    a = load_binance_wallet(crypto_array)
+    print(a)
+    print("Done")
