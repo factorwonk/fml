@@ -10,7 +10,7 @@ from statsmodels.tsa.vector_ar.vecm import coint_johansen
 
 def resample_min_to_hourly(minute_wallet_df):
     """
-        Takes in the minute-wise binance tick data and returns resampled, hourly data
+    Takes in the minute-wise binance tick data and returns resampled, hourly data
 
     Args:
         minute_wallet_df (_type_): _description_
@@ -25,8 +25,7 @@ def resample_min_to_hourly(minute_wallet_df):
 
 def resample_min_to_daily(minute_wallet_df):
     """
-    
-    akes in the minute-wise binance tick data and returns resampled, end-of-day data
+    Takes in the minute-wise binance tick data and returns resampled, end-of-day data
 
     Args:
         wallet_df (_type_): _description_
@@ -39,7 +38,8 @@ def resample_min_to_daily(minute_wallet_df):
 
 
 def calc_coint_agg_series(wallet_df):
-    """Engle-Granger Two Step Cointegration method. Run this with daily (fast) and hourly (slow) data
+    """
+    Engle-Granger Two Step Cointegration method. Runs quickly with daily data and slowly with hourly data
 
     Args:
         wallet_df ([DataFrame]): [Crypto wallet with end-of hour or end of day prices]
