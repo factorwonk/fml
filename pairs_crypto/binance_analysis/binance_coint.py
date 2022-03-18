@@ -50,7 +50,7 @@ def calc_coint_agg_series(wallet_df):
             if a1 != a2:
                 test_result = ts.coint(wallet_df[a1].fillna(0), wallet_df[a2].fillna(0))
                 list_pairs.append([a1, a2, test_result[1]])
-    print(list_pairs)
+    # print(list_pairs)
     return list_pairs
 
 
@@ -93,30 +93,31 @@ if __name__ == "__main__":
         "SOL-USDT",
         "ZEC-USDT",
     ]
-    print("\n Loading in the entire Binance Crypto Wallet on", today)
+    # This does not have a set time index
+    print("\n Loading in the entire Binance Crypto Wallet as of", today)
     print("\n")
     a = load_binance_wallet(crypto_array)
-    print(a)
+    # print(a)
     print("Pivot data into usable format")
     b = pivot_binance_wallet()
     # To check rebalancing function
     # print(b.head(61))
     print(b)
-    print("Resample to hourly data")
+    print("Resampling to hourly data")
     c = resample_min_to_hourly(b)
     print(c)
-    print("Resample to daily data")
+    print("Resampling to daily data")
     d = resample_min_to_daily(b)
     print(d)
     # This takes a while. Go make a cup of coffee.
-    print(
-        "Calculate Engle Granger cointegration for each crypto pair using hourly data\n"
-    )
-    calc_coint_agg_series(c)
+    # print("Calculate Engle Granger cointegration using hourly data\n")
+    # calc_coint_agg_series(c)
     print("\n")
-    print(
-        "Calculate Engle Granger cointegration for each crypto pair using daily data\n"
-    )
-    calc_coint_agg_series(d)
+    print("Engle Granger cointegration using daily data for crypto pairs\n")
+    e = calc_coint_agg_series(d)
+    print(e)
+    print("\n Daily trading pairs signifcant at the 0.05 level\n")
+    f = identify_significant_pairs(e)
+    print(f)
     print("\n")
     print("Done")
