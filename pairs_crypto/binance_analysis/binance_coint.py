@@ -24,7 +24,9 @@ def resample_min_to_hourly(minute_wallet_df):
 
 
 def resample_min_to_daily(minute_wallet_df):
-    """_summary_
+    """
+    
+    akes in the minute-wise binance tick data and returns resampled, end-of-day data
 
     Args:
         wallet_df (_type_): _description_
@@ -37,7 +39,7 @@ def resample_min_to_daily(minute_wallet_df):
 
 
 def calc_coint_agg_series(wallet_df):
-    """Engle-Granger Two Step Cointegration method. This needs to be run on daily data
+    """Engle-Granger Two Step Cointegration method. Run this with daily (fast) and hourly (slow) data
 
     Args:
         wallet_df ([DataFrame]): [Crypto wallet with end-of hour or end of day prices]
@@ -106,7 +108,15 @@ if __name__ == "__main__":
     print("Resample to daily data")
     d = resample_min_to_daily(b)
     print(d)
-    # print("Calculate Engle Granger cointegration for each crypto pair")
-    # calc_coint_agg_series(b)
+    # This takes a while. Go make a cup of coffee.
+    print(
+        "Calculate Engle Granger cointegration for each crypto pair using hourly data\n"
+    )
+    calc_coint_agg_series(c)
+    print("\n")
+    print(
+        "Calculate Engle Granger cointegration for each crypto pair using daily data\n"
+    )
+    calc_coint_agg_series(d)
     print("\n")
     print("Done")
