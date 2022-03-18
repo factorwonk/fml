@@ -78,7 +78,7 @@ def identify_significant_pairs(list_pairs):
     Args:
         list_pairs (list of lists): First element is crypto pair 1, second element crypto pair 2 and third element is L.O.S.
     """
-    return [x for x in list_pairs if x[2] <= 0.05]
+    return [x for x in list_pairs if x[2] <= 0.01]
 
 
 if __name__ == "__main__":
@@ -109,15 +109,19 @@ if __name__ == "__main__":
     print("Resampling to daily data")
     d = resample_min_to_daily(b)
     print(d)
-    # This takes a while. Go make a cup of coffee.
-    # print("Calculate Engle Granger cointegration using hourly data\n")
-    # calc_coint_agg_series(c)
     print("\n")
     print("Engle Granger cointegration using daily data for crypto pairs\n")
     e = calc_coint_agg_series(d)
     print(e)
-    print("\n Daily trading pairs signifcant at the 0.05 level\n")
+    print("\n Daily trading pairs signifcant at the 0.01 level\n")
     f = identify_significant_pairs(e)
     print(f)
-    print("\n")
-    print("Done")
+    # This takes a while. Go make a cup of coffee.
+    print("\n Calculate Engle Granger cointegration using hourly data\n")
+    print("This takes a while. Go get a coffee\n")
+    g = calc_coint_agg_series(c)
+    print(g)
+    print("\n Hourly trading pairs signifcant at the 0.01 level\n")
+    h = identify_significant_pairs(g)
+    print(h)
+    print("\n Done")
