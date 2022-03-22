@@ -1,3 +1,4 @@
+from cgi import test
 import os
 import pandas as pd
 import statsmodels.tsa.stattools as ts
@@ -6,6 +7,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from binance_utilities import load_binance_wallet, pivot_binance_wallet
 from statsmodels.tsa.vector_ar.vecm import coint_johansen
+from statsmodels.tsa.stattools import adfuller
 
 
 def resample_min_to_hourly(minute_wallet_df):
@@ -35,6 +37,23 @@ def resample_min_to_daily(minute_wallet_df):
     eod_wallet_df.index = pd.to_datetime(eod_wallet_df.index)
     eod_wallet_df = eod_wallet_df.resample("1D", closed="right").first()
     return eod_wallet_df
+
+
+def calc_adf_agg_series(wallet_df):
+    """_summary_
+
+    Args:
+        wallet_df (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    adf_pairs = []
+    for c1 in wallet_df.columns:
+        test_result = ts.adfuller(wallet_df[c1].dropna())
+        adf_pairs.append([c1, test_result[1]])
+    return adf_pairs
+    # return c1, test_result
 
 
 def calc_coint_agg_series(wallet_df):
@@ -97,19 +116,25 @@ if __name__ == "__main__":
     print("\n Loading in the entire Binance Crypto Wallet as of", today)
     print("\n")
     a = load_binance_wallet(crypto_array)
-    # print(a)
+    print(a)
     print("Pivot data into usable format")
     b = pivot_binance_wallet()
     # To check rebalancing function
     # print(b.head(61))
     print(b)
-    print("Resampling to hourly data")
-    c = resample_min_to_hourly(b)
-    print(c)
+    # print("Resampling to hourly data")
+    # c = resample_min_to_hourly(b)
+    # print(c)
     print("Resampling to daily data")
     d = resample_min_to_daily(b)
     print(d)
     print("\n")
+    print("Count NaNs")
+    print(d.isna().sum())
+    print("\n")
+    print("ADF Test of Stationary for each crypto pair\n")
+    x = calc_adf_agg_series(d)
+    print(x)
     print("Engle Granger cointegration using daily data for crypto pairs\n")
     e = calc_coint_agg_series(d)
     print(e)
@@ -117,11 +142,11 @@ if __name__ == "__main__":
     f = identify_significant_pairs(e)
     print(f)
     # This takes a while. Go make a cup of coffee.
-    print("\n Calculate Engle Granger cointegration using hourly data\n")
-    print("This takes a while. Go get a coffee\n")
-    g = calc_coint_agg_series(c)
-    print(g)
-    print("\n Hourly trading pairs signifcant at the 0.01 level\n")
-    h = identify_significant_pairs(g)
-    print(h)
+    # print("\n Calculate Engle Granger cointegration using hourly data\n")
+    # print("This takes a while. Go get a coffee\n")
+    # g = calc_coint_agg_series(c)
+    # print(g)
+    # print("\n Hourly trading pairs signifcant at the 0.01 level\n")
+    # h = identify_significant_pairs(g)
+    # print(h)
     print("\n Done")
