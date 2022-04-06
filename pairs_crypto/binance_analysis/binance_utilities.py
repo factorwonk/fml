@@ -24,12 +24,15 @@ def load_single_binance_pair(symbol) -> pd.DataFrame:
     path = (
         "//Users//hyperion//Wasteland//Python//Repos//fml//pairs_crypto//binance_data//"
     )
+    engine = "pyarrow"
     try:
-        df = pd.read_parquet(os.path.join(path, "%s.parquet" % symbol))
-        select_cols = ["close", "volume", "number_of_trades"]
-        df = df[select_cols].reset_index()
+        df = pd.read_parquet(
+            os.path.join(path, "%s.parquet" % symbol), engine=engine
+        ).reset_index()
+        select_cols = ["open_time", "close", "volume", "number_of_trades"]
+        df = df[select_cols]
         # Convert open_time to pandas timestamp
-        df["open_time"] = pd.to_datetime(df["open_time"])
+        df["open_time"] = pd.to_datetime(df["open_time"], errors="coerce")
         # Add close time to DataFrame
         df["close_time"] = df["open_time"] + timedelta(minutes=1)
         # Drop open_time
@@ -71,8 +74,9 @@ def load_binance_wallet(input_array) -> pd.DataFrame:
     # init empty df
     wallet_df = pd.DataFrame()
     # Appending dataframes this way is not efficient. Append to a list first, then convert to DF
-    for c in crypto_array:
-        wallet_df = wallet_df.append(load_single_binance_pair(c))
+    wallet_df = pd.concat([load_single_binance_pair(c) for c in crypto_array])
+    # for c in crypto_array:
+    #     wallet_df = wallet_df.append(load_single_binance_pair(c))
     wallet_df.to_csv(
         os.path.join(output_path, f"binance_merged_{date}.csv"), index=False
     )
